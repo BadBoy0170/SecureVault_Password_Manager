@@ -31,7 +31,7 @@ SecureVault is a modern, secure password management system built with React and 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/SecureVault-Password-Manager.git
+   git clone https://github.com/SecureVault-Password-Manager.git
    cd SecureVault-Password-Manager
    ```
 
