@@ -1,19 +1,16 @@
-# SecureVault
-
-A modern, secure password management system built with React and advanced encryption standards.
+# SecureVault Password Manager
 
 ## Overview
 
-SecureVault is a robust password management solution that prioritizes security and user privacy. Built with modern web technologies and implementing zero-knowledge architecture, it ensures your sensitive data remains protected and accessible only to you.
+SecureVault is a modern, secure password management system built with React and advanced encryption standards. It provides a robust, client-side solution for storing and managing sensitive credentials with zero-knowledge architecture.
 
 ## Key Features
 
-- **Advanced Encryption**: AES-256 encryption with client-side key derivation
-- **Zero-Knowledge Architecture**: Your master password never leaves your device
-- **Password Generator**: Create strong, unique passwords with customizable parameters
-- **Intuitive Interface**: Clean, modern design focused on usability
-- **Secure Storage**: Encrypted data storage with robust security measures
-- **Cross-Platform**: Access your vault from any modern web browser
+- 🔒 **Advanced Encryption**: AES-256 encryption with client-side key derivation
+- 🔑 **Zero-Knowledge Architecture**: Master password never leaves your device
+- 🛡️ **Secure Storage**: Encrypted data storage with robust security measures
+- 🌐 **Cross-Platform**: Access your vault from any modern web browser
+- 🔐 **Password Generator**: Create strong, unique passwords with customizable parameters
 
 ## Security Features
 
@@ -23,55 +20,65 @@ SecureVault is a robust password management solution that prioritizes security a
 - Secure random number generation
 - No plain-text data storage
 
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-## Development
-
-### Prerequisites
+## Prerequisites
 
 - Node.js 18 or higher
 - npm 9 or higher
 
-### Building
+## Getting Started
 
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/SecureVault-Password-Manager.git
+   cd SecureVault-Password-Manager
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development
+
+Start the development server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`
+
+### Building for Production
+
+Create a production build:
 ```bash
 npm run build
 ```
 
-### Testing
+The built files will be in the `dist` directory.
 
+### Running the Production Build
+
+Preview the production build:
 ```bash
-npm run test
+npm run preview
 ```
 
-## Architecture
+## Project Structure
 
-SecureVault implements a modern, secure architecture:
+- `src/`: Source code
+  - `App.tsx`: Main application component
+  - `hooks/`: Custom React hooks
+  - `utils/`: Utility functions (including cryptographic utilities)
+  - `types.ts`: TypeScript type definitions
 
-- **Frontend**: React with TypeScript
-- **State Management**: React Hooks
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Encryption**: Web Crypto API
-- **Storage**: Local encrypted storage
+## Cryptographic Approach
 
-## Security Considerations
-
-- Master password is never stored
-- All encryption/decryption occurs client-side
-- Secure random number generation for cryptographic operations
-- No sensitive data transmission to servers
-- Regular security audits and updates
+- Uses Web Crypto API for all cryptographic operations
+- Implements client-side key derivation
+- Encrypts individual credentials with unique keys
+- Provides secure password generation
 
 ## Contributing
 
@@ -81,17 +88,37 @@ SecureVault implements a modern, secure architecture:
 4. Push to the branch
 5. Open a Pull Request
 
+## Security Considerations
+
+- Master password is never stored
+- All encryption/decryption occurs client-side
+- Secure random number generation for cryptographic operations
+- No sensitive data transmission to servers
+
+## Roadmap
+
+- [ ] Add credential editing functionality
+- [ ] Implement secure credential export/import
+- [ ] Add multi-factor authentication
+- [ ] Create browser extensions
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-- Web Crypto API for providing robust cryptographic operations
-- React team for an excellent frontend framework
-- Tailwind CSS for utility-first styling
-- Lucide for beautiful, minimal icons
+- Web Crypto API for robust cryptographic operations
+- React for an excellent frontend framework
+- Vite for fast development and build tooling
 
 ## Support
 
 For support, please open an issue in the GitHub repository.
+
+## Disclaimer
+
+While SecureVault implements strong security measures, no system is 100% secure. Always use additional security practices like:
+- Using a unique, strong master password
+- Keeping your device secure
+- Regularly updating the application
