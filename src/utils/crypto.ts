@@ -23,71 +23,107 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 }
 
 export async function generateSalt(): Promise<string> {
-  const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
-  return arrayBufferToBase64(salt);
+  try {
+    const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
+    return arrayBufferToBase64(salt);
+  } catch (error) {
+    console.error('Failed to generate salt:', error);
+    throw new Error('Cryptographic salt generation failed');
+  }
 }
 
 export async function deriveKey(password: string, salt: string): Promise<CryptoKey> {
-  const encoder = new TextEncoder();
-  const passwordBuffer = encoder.encode(password);
-  const saltBuffer = base64ToArrayBuffer(salt);
-  
-  const importedKey = await crypto.subtle.importKey(
-    'raw',
-    passwordBuffer,
-    'PBKDF2',
-    false,
-    ['deriveBits', 'deriveKey']
-  );
+  if (!password || !salt) {
+    throw new Error('Password and salt are required');
+  }
 
-  return crypto.subtle.deriveKey(
-    {
-      name: 'PBKDF2',
-      salt: saltBuffer,
-      iterations: ITERATIONS,
-      hash: 'SHA-256'
-    },
-    importedKey,
-    { name: 'AES-GCM', length: KEY_LENGTH },
-    false,
-    ['encrypt', 'decrypt']
-  );
+  try {
+    const encoder = new TextEncoder();
+    const passwordBuffer = encoder.encode(password);
+    const saltBuffer = base64ToArrayBuffer(salt);
+    
+    const importedKey = await crypto.subtle.importKey(
+      'raw',
+      passwordBuffer,
+      'PBKDF2',
+      false,
+      ['deriveBits', 'deriveKey']
+    );
+
+    return crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: saltBuffer,
+        iterations: ITERATIONS,
+        hash: 'SHA-256'
+      },
+      importedKey,
+      { name: 'AES-GCM', length: KEY_LENGTH },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  } catch (error) {
+    console.error('Key derivation failed:', error);
+    throw new Error('Failed to derive cryptographic key');
+  }
 }
 
 export async function encrypt(data: string, key: CryptoKey): Promise<{ encryptedData: string; iv: string }> {
-  const encoder = new TextEncoder();
-  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
-  
-  const encryptedBuffer = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    encoder.encode(data)
-  );
+  if (!data) {
+    throw new Error('Data to encrypt cannot be empty');
+  }
 
-  return {
-    encryptedData: arrayBufferToBase64(encryptedBuffer),
-    iv: arrayBufferToBase64(iv)
-  };
+  try {
+    const encoder = new TextEncoder();
+    const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+    
+    const encryptedBuffer = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      encoder.encode(data)
+    );
+
+    return {
+      encryptedData: arrayBufferToBase64(encryptedBuffer),
+      iv: arrayBufferToBase64(iv)
+    };
+  } catch (error) {
+    console.error('Encryption failed:', error);
+    throw new Error('Failed to encrypt data');
+  }
 }
 
 export async function decrypt(encryptedData: string, iv: string, key: CryptoKey): Promise<string> {
-  const decoder = new TextDecoder();
-  const encryptedBuffer = base64ToArrayBuffer(encryptedData);
-  const ivBuffer = base64ToArrayBuffer(iv);
+  if (!encryptedData || !iv) {
+    throw new Error('Encrypted data and IV are required');
+  }
 
-  const decryptedBuffer = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: ivBuffer },
-    key,
-    encryptedBuffer
-  );
+  try {
+    const decoder = new TextDecoder();
+    const encryptedBuffer = base64ToArrayBuffer(encryptedData);
+    const ivBuffer = base64ToArrayBuffer(iv);
 
-  return decoder.decode(decryptedBuffer);
+    const decryptedBuffer = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: ivBuffer },
+      key,
+      encryptedBuffer
+    );
+
+    return decoder.decode(decryptedBuffer);
+  } catch (error) {
+    console.error('Decryption failed:', error);
+    throw new Error('Failed to decrypt data');
+  }
 }
 
 export function generatePassword(
   length: number = 16,
   options = { uppercase: true, lowercase: true, numbers: true, symbols: true }
 ): string {
+  if (length < 8) {
+    throw new Error('Password length must be at least 8 characters');
+  }
+
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lowercase = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
@@ -98,6 +134,10 @@ export function generatePassword(
   if (options.lowercase) chars += lowercase;
   if (options.numbers) chars += numbers;
   if (options.symbols) chars += symbols;
+
+  if (chars.length === 0) {
+    throw new Error('At least one character set must be selected');
+  }
 
   return Array.from(crypto.getRandomValues(new Uint8Array(length)))
     .map((byte) => chars[byte % chars.length])

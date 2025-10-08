@@ -5,7 +5,6 @@ export interface Credential {
   password: string;
   url?: string;
   notes?: string;
-  category?: string;
   createdAt: number;
   updatedAt: number;
 }
